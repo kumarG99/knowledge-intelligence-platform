@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 
+from app.core.config import settings
+
+
 app = FastAPI(
-    title="Knowledge Intelligence Platform API",
-    version="0.1.0",
+    title=settings.app_name,
+    version=settings.app_version,
 )
 
 
