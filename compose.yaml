@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: kip-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: kip_user
+      POSTGRES_PASSWORD: ${KIP_DB_PASSWORD:?Set KIP_DB_PASSWORD in root .env}
+      POSTGRES_DB: kip_db
+
+    ports:
+      - "127.0.0.1:5433:5432"
+
+    volumes:
+      - kip_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kip_user -d kip_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  kip_postgres_data:

@@ -1,3 +1,4 @@
+
 name: Backend CI
 
 on:
@@ -7,6 +8,25 @@ on:
 jobs:
   backend-quality:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: kip_user
+          POSTGRES_PASSWORD: kip_ci_password
+          POSTGRES_DB: kip_db
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U kip_user -d kip_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+psycopg://kip_user:kip_ci_password@localhost:5433/kip_db
+      TEST_DATABASE_URL: postgresql+psycopg://kip_user:kip_ci_password@localhost:5433/kip_test_db
 
     defaults:
       run:
@@ -26,11 +46,30 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
+      - name: Create test database
+        run: |
+          python - <<'PY'
+          import psycopg
+
+          with psycopg.connect(
+              "postgresql://kip_user:kip_ci_password@localhost:5433/kip_db",
+              autocommit=True,
+          ) as connection:
+              connection.execute("CREATE DATABASE kip_test_db")
+          PY
+
+      - name: Apply development database migrations
+        run: python -m alembic upgrade head
+
+      - name: Apply test database migrations
+        run: |
+          DATABASE_URL="$TEST_DATABASE_URL" python -m alembic upgrade head
+
       - name: Check linting
-        run: ruff check app tests
+        run: python -m ruff check .
 
       - name: Check formatting
-        run: ruff format --check app tests
+        run: python -m ruff format --check app tests
 
       - name: Run tests
         run: python -m pytest -q
