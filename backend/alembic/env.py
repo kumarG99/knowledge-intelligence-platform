@@ -5,7 +5,10 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.core.config import settings
 from app.db.base import Base
-from app.models.organization import Organization  # noqa: F401
+from app.models.document import Document as Document
+from app.models.document_chunk import DocumentChunk  # noqa: F401
+from app.models.document_page import DocumentPage  # noqa: F401
+from app.models.organization import Organization as Organization
 
 config = context.config
 

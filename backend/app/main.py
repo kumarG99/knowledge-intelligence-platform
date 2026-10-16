@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.api.routes.documents import router as documents_router
 from app.api.routes.organization import router as organizations_router
 from app.core.config import settings
 
@@ -9,6 +10,7 @@ app = FastAPI(
 )
 
 app.include_router(organizations_router, prefix="/api/v1")
+app.include_router(documents_router, prefix="/api/v1")
 
 
 @app.get("/api/v1/health")

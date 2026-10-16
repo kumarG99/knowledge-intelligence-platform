@@ -6,3 +6,6 @@ pydantic-settings
 SQLAlchemy>=2.0,<3.0
 psycopg[binary]>=3.2,<4.0
 alembic>=1.13,<2.0
+python-multipart>=0.0.20,<1.0
+pymupdf>=1.24,<2.0
+pgvector>=0.4,<1.0
