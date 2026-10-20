@@ -1,4 +1,3 @@
-
 import uuid
 
 import pymupdf
@@ -78,15 +77,11 @@ def test_process_document_saves_and_replaces_pages_and_chunks(
     assert process_document(db_session, document.id) == 2
 
     pages_after = db_session.scalars(
-        select(DocumentPage).where(
-            DocumentPage.document_id == document.id
-        )
+        select(DocumentPage).where(DocumentPage.document_id == document.id)
     ).all()
 
     chunks_after = db_session.scalars(
-        select(DocumentChunk).where(
-            DocumentChunk.document_id == document.id
-        )
+        select(DocumentChunk).where(DocumentChunk.document_id == document.id)
     ).all()
 
     assert len(pages_after) == 2

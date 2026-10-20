@@ -1,4 +1,3 @@
-
 import uuid
 from pathlib import Path
 from unittest.mock import patch
@@ -125,15 +124,10 @@ def test_list_documents_only_returns_organization_documents(
     db_session.add_all([document_a, document_b])
     db_session.commit()
 
-    response = client.get(
-        f"/api/v1/organizations/{organization_a.id}/documents"
-    )
+    response = client.get(f"/api/v1/organizations/{organization_a.id}/documents")
 
     assert response.status_code == 200
 
-    filenames = [
-        document["filename"]
-        for document in response.json()
-    ]
+    filenames = [document["filename"] for document in response.json()]
 
     assert filenames == ["organization-a.pdf"]

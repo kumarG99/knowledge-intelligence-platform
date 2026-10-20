@@ -1,4 +1,3 @@
-
 import uuid
 
 from sqlalchemy import delete
@@ -33,15 +32,9 @@ def process_document(
     try:
         # Replace previously processed content.
         db.execute(
-            delete(DocumentChunk).where(
-                DocumentChunk.document_id == document_id
-            )
+            delete(DocumentChunk).where(DocumentChunk.document_id == document_id)
         )
-        db.execute(
-            delete(DocumentPage).where(
-                DocumentPage.document_id == document_id
-            )
-        )
+        db.execute(delete(DocumentPage).where(DocumentPage.document_id == document_id))
 
         for page in extracted.pages:
             db.add(

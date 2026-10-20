@@ -47,6 +47,7 @@ def db_session():
         connection.close()
         engine.dispose()
 
+
 @pytest.fixture
 def client(db_session):
     def override_get_db():

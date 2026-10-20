@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -40,9 +39,7 @@ def extract_pdf_text(file_path: str | Path) -> ExtractedDocument:
                 )
             )
 
-    full_text = "\n\n".join(
-        page.text for page in pages if page.text
-    )
+    full_text = "\n\n".join(page.text for page in pages if page.text)
 
     return ExtractedDocument(
         page_count=len(pages),

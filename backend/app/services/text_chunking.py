@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 
 from app.services.pdf_extraction import ExtractedPage
@@ -26,9 +25,7 @@ def chunk_pages(
         raise ValueError("chunk_size must be positive.")
 
     if overlap < 0 or overlap >= chunk_size:
-        raise ValueError(
-            "overlap must be non-negative and smaller than chunk_size."
-        )
+        raise ValueError("overlap must be non-negative and smaller than chunk_size.")
 
     chunks: list[TextChunk] = []
 

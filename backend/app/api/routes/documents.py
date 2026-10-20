@@ -1,4 +1,3 @@
-
 import uuid
 from pathlib import Path
 
@@ -95,4 +94,3 @@ def list_documents(
         }
         for document in documents
     ]
-
