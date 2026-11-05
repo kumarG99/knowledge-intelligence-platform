@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { Sidebar } from "./components/Sidebar";
 import { OrganizationCard } from "./components/OrganizationCard";
 import { DocumentsPage } from "./pages/DocumentsPage";
+import { AssistantPage } from "./pages/AssistantPage";
 import "./App.css";
 
 const DEMO_ORGANIZATION_ID = "eafd30dc-f3db-42ba-bd4a-8072da824ebe"
@@ -76,10 +77,7 @@ function App() {
           <Route
             path="/assistant"
             element={
-              <PlaceholderPage
-                title="AI Assistant"
-                description="Ask questions and discover answers from your documents."
-              />
+              <AssistantPage organizationId={DEMO_ORGANIZATION_ID} />
             }
           />
           <Route

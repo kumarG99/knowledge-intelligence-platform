@@ -10,3 +10,6 @@ __pycache__/
 .vscode/
 backend/uploads/
 backups/
+
+# Generated RAG evaluation reports
+/backend/evaluations/reports/

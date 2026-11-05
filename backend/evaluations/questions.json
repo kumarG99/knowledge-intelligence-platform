@@ -1,0 +1,36 @@
+
+[
+  {
+    "id": "eval-001",
+    "category": "answerable",
+    "question": "What is the maximum PDF upload size?",
+    "expected_keywords": ["10 MiB"],
+    "expected_page": 1
+  },
+  {
+    "id": "eval-002",
+    "category": "answerable",
+    "question": "What happens if a PDF exceeds the upload size limit?",
+    "expected_keywords": ["413"],
+    "expected_page": 2
+  },
+  {
+    "id": "eval-003",
+    "category": "answerable",
+    "question": "What should be checked when an upload returns HTTP 400?",
+    "expected_keywords": ["PDF", "header"],
+    "expected_page": 2
+  },
+  {
+    "id": "eval-004",
+    "category": "unanswerable",
+    "question": "What is the company's annual vacation allowance for employees?",
+    "expected_answer": "I don't know based on the provided documents."
+  },
+  {
+    "id": "eval-005",
+    "category": "unanswerable",
+    "question": "Who is the current CEO of the company?",
+    "expected_answer": "I don't know based on the provided documents."
+  }
+]
