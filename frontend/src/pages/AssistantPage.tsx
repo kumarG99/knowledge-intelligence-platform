@@ -1,5 +1,5 @@
 
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 
 import {
   askAssistant,
@@ -9,6 +9,62 @@ import {
 type AssistantPageProps = {
   organizationId: string;
 };
+
+function getPdfUrl(
+  organizationId: string,
+  documentId: string,
+  pageNumber: number,
+): string {
+  const baseUrl =
+    `/api/v1/organizations/${encodeURIComponent(organizationId)}` +
+    `/documents/${encodeURIComponent(documentId)}/file`;
+
+  const page = Math.max(1, Math.floor(pageNumber));
+
+  return `${baseUrl}#page=${page}`;
+}
+
+function renderAnswerWithCitations(
+  answer: string,
+  result: AssistantResponse,
+  organizationId: string,
+): ReactNode[] {
+  const parts = answer.split(/(\[\d+\])/g);
+
+  return parts.map((part, index) => {
+    const match = /^\[(\d+)\]$/.exec(part);
+
+    if (!match) {
+      return part;
+    }
+
+    const sourceIndex = Number(match[1]) - 1;
+    const source = result.sources[sourceIndex];
+
+    // Do not create a link for an unknown citation.
+    if (!source) {
+      return part;
+    }
+
+    return (
+      <a
+        key={`citation-${index}`}
+        href={getPdfUrl(
+          organizationId,
+          source.document_id,
+          source.page_number,
+        )}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="assistant-citation-link"
+        aria-label={`Open citation ${sourceIndex + 1}: ${source.filename}, page ${source.page_number}`}
+        title={`${source.filename} — Page ${source.page_number}`}
+      >
+        {part}
+      </a>
+    );
+  });
+}
 
 export function AssistantPage({
   organizationId,
@@ -79,10 +135,7 @@ export function AssistantPage({
         </div>
       </div>
 
-      <form
-        className="assistant-form"
-        onSubmit={handleSubmit}
-      >
+      <form className="assistant-form" onSubmit={handleSubmit}>
         <label htmlFor="assistant-question">
           Ask your documents
         </label>
@@ -137,7 +190,11 @@ export function AssistantPage({
             </div>
 
             <p className="assistant-answer-text">
-              {result.answer}
+              {renderAnswerWithCitations(
+                result.answer,
+                result,
+                organizationId,
+              )}
             </p>
 
             {result.model && (
@@ -170,10 +227,20 @@ export function AssistantPage({
                     </span>
 
                     <div className="assistant-source-details">
-                      <strong>{source.filename}</strong>
-                      <span>
-                        Page {source.page_number}
-                      </span>
+                      <a
+                        href={getPdfUrl(
+                          organizationId,
+                          source.document_id,
+                          source.page_number,
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="assistant-source-link"
+                        aria-label={`Open ${source.filename}, page ${source.page_number}`}
+                      >
+                        {source.filename}
+                      </a>
+                      <span>Page {source.page_number}</span>
                     </div>
                   </li>
                 ))}

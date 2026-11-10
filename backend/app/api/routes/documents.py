@@ -2,6 +2,7 @@ import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -94,3 +95,44 @@ def list_documents(
         }
         for document in documents
     ]
+
+
+@router.get("/organizations/{organization_id}/documents/{document_id}/file")
+def get_document_file(
+    organization_id: uuid.UUID,
+    document_id: uuid.UUID,
+    db: Session = Depends(get_db),
+):
+    """Return an organization's stored PDF for inline viewing."""
+
+    document = db.scalar(
+        select(Document).where(
+            Document.id == document_id,
+            Document.organization_id == organization_id,
+        )
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found.",
+        )
+
+    pdf_path = Path(document.storage_path)
+
+    if not pdf_path.is_file():
+        raise HTTPException(
+            status_code=404,
+            detail="Document file not found.",
+        )
+
+    return FileResponse(
+        path=pdf_path,
+        media_type="application/pdf",
+        content_disposition_type="inline",
+        filename=document.filename,
+        headers={
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
